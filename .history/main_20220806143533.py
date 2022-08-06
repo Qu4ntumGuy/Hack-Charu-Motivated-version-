@@ -200,12 +200,12 @@ class MyGame(arcade.Window):
                 'status': 'over'
             })
 
-            obj = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
+            li = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
             time_list = []
-            print(obj)
-        
-                
-                
+            print(li)
+            if list:
+                for i in li:
+                    time_list.append(li[i]['time'])
 
 
                 

@@ -183,7 +183,7 @@ class MyGame(arcade.Window):
         # if 
         self.x = self.player_sprite.center_x
         if self.Hand_Class.result != self.result_local:
-            # print(self.Hand_Class.result)
+            print(self.Hand_Class.result)
             self.result_local = self.Hand_Class.result
             if self.Hand_Class.result == 2:
                 if self.physics_engine.can_jump():
@@ -194,18 +194,24 @@ class MyGame(arcade.Window):
             print(self.user_name)
             # print(self.room_id[:self.room_id-2])
 
-            db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').child(self.user_name).push({
+            db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').child(self.user_name).update({
 
                 'time': time.time(),
-                'status': 'over'
             })
-
-            obj = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
             time_list = []
-            print(obj)
-        
-                
-                
+            if list :
+             for i in list:
+                if list[i]['status'] == 'over' and list[i]['name']!=self.user_name:
+                    time_list.append(list[i]['time'])
+                time_list.sort()
+                rank = 0
+                for i in time_list:
+                 if i > self.time:
+                    rank += 1
+                self.rank = rank
+            else:
+                self.rank = 1
+            print("Rank: " , self.rank)
 
 
                 
@@ -274,7 +280,7 @@ def create_room(name):
     time_wait = int(input())
     # create room
     print("Room id: " + str(room_id))
-    print("Will Start in few seconds!")
+    print("Will Start in 60 seconds!")
     db.reference("rooms").child(str(room_id)).set({"room_id": room_id})
     db.reference("rooms").child(str(room_id)).child("players").push({"name": f'{name}', "admin": True})
     time_count  = time_wait

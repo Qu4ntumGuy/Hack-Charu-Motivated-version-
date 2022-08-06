@@ -203,7 +203,13 @@ class MyGame(arcade.Window):
             obj = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
             time_list = []
             print(obj)
-        
+            # converto object to list
+            for key, value in obj.items():
+                for key1, value1 in value.items():
+                    time_list.append(value1['time'])
+            print(time_list)
+            # sort list
+            if obj:
                 
                 
 

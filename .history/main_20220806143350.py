@@ -200,12 +200,22 @@ class MyGame(arcade.Window):
                 'status': 'over'
             })
 
-            obj = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
+            li = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
             time_list = []
-            print(obj)
-        
-                
-                
+            print(li)
+            if list:
+             for i in list:
+                if list[i]["status"] == "over" and list[i]["name"]!=self.user_name:
+                    time_list.append(list[i]["time"])
+                time_list.sort()
+                rank = 0
+                for i in time_list:
+                 if i > self.time:
+                    rank += 1
+                self.rank = rank
+            else:
+                self.rank = 1
+            print("Rank: " , self.rank)
 
 
                 

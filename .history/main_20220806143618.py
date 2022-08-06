@@ -203,9 +203,8 @@ class MyGame(arcade.Window):
             obj = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
             time_list = []
             print(obj)
-        
-                
-                
+            if obj:
+                #
 
 
                 

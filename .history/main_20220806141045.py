@@ -183,7 +183,7 @@ class MyGame(arcade.Window):
         # if 
         self.x = self.player_sprite.center_x
         if self.Hand_Class.result != self.result_local:
-            # print(self.Hand_Class.result)
+            print(self.Hand_Class.result)
             self.result_local = self.Hand_Class.result
             if self.Hand_Class.result == 2:
                 if self.physics_engine.can_jump():
@@ -192,20 +192,21 @@ class MyGame(arcade.Window):
         if distance > 1000:
             self.game_over = True
             print(self.user_name)
-            # print(self.room_id[:self.room_id-2])
+            print(self.room_id)
 
-            db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').child(self.user_name).push({
-
-                'time': time.time(),
-                'status': 'over'
-            })
-
-            obj = db.reference('rooms').child(str(self.room_id)[:len(str(self.room_id))-1]).child('users').get()
+            db.reference('rooms').child(f'/{str(self.room_id)}').child(self.user_name).update({'status': 'over' , 'time': time.time()})
+            list = db.reference('rooms').child(f'/{str(self.room_id)}').get()
             time_list = []
-            print(obj)
-        
-                
-                
+            for i in list:
+                if list[i]['status'] == 'over' and list[i]['name']!=self.user_name:
+                    time_list.append(list[i]['time'])
+            time_list.sort()
+            rank = 0
+            for i in time_list:
+                if i > self.time:
+                    rank += 1
+            self.rank = rank
+            print(rank)
 
 
                 
@@ -260,7 +261,7 @@ class MyGame(arcade.Window):
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
 
-def main(room_id , user_name):
+def main(user_name , room_id):
    
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE , user_name , room_id)
     window.setup()
@@ -274,7 +275,7 @@ def create_room(name):
     time_wait = int(input())
     # create room
     print("Room id: " + str(room_id))
-    print("Will Start in few seconds!")
+    print("Will Start in 60 seconds!")
     db.reference("rooms").child(str(room_id)).set({"room_id": room_id})
     db.reference("rooms").child(str(room_id)).child("players").push({"name": f'{name}', "admin": True})
     time_count  = time_wait
@@ -325,7 +326,7 @@ def join_room( name, room_id):
             time.sleep(1)
         print("Game started")
         # start game
-        GameScreen = main(room_id , name)
+        GameScreen = main(name , room_id)
         # GameScreen.name = name
         return
     pass
