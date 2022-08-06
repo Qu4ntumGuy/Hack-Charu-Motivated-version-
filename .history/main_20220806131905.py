@@ -64,7 +64,7 @@ class MyGame(arcade.Window):
         self.speed_flag = False
     def Revive(self ):
         self.player_sprite.center_x = self.x - 1*GRID_PIXEL_SIZE
-        self.player_sprite.center_y = 6 * GRID_PIXEL_SIZE
+        self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.stop_movment = True
     def setup(self):
         

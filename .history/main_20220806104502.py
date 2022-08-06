@@ -24,7 +24,7 @@ VIEWPORT_MARGIN = SPRITE_PIXEL_SIZE * SPRITE_SCALING
 RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 MOVEMENT_SPEED = 50 * SPRITE_SCALING
 JUMP_SPEED = 20 * SPRITE_SCALING
-GRAVITY = 0.7* SPRITE_SCALING
+GRAVITY = 1* SPRITE_SCALING
 CAMERA_SPEED = 0.1
 
 # Main game class
@@ -34,7 +34,8 @@ class MyGame(arcade.Window):
       
         super().__init__(width, height, title)
         # thread.start_new_thread ( function, args[, kwargs] )
-    
+        self.static_wall_list = None
+        self.moving_wall_list = None
         # run the thread
         self.Hand_Class = ThisClass()
         self.thread = threading.Thread(target=self.Hand_Class.get_hand_position)
@@ -64,7 +65,7 @@ class MyGame(arcade.Window):
         self.speed_flag = False
     def Revive(self ):
         self.player_sprite.center_x = self.x - 1*GRID_PIXEL_SIZE
-        self.player_sprite.center_y = 6 * GRID_PIXEL_SIZE
+        self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.stop_movment = True
     def setup(self):
         
@@ -86,39 +87,86 @@ class MyGame(arcade.Window):
         #     counter += 1
         counters = 1
         # Map creation
-        for i in range(10):            
-            rand = random.randint(80 , 200)
-            # y_rand = counters
-            for o in range(10):
-                countes = 1
-                for i in range(5):
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
-                    wall.center_x =  10000
-                    wall.center_y = countes * GRID_PIXEL_SIZE
-                    self.static_wall_list.append(wall)
-                    countes += 1
-                y_heights = rand
-            for j in range(rand):
-                wall = arcade.Sprite(":resources:images/tiles/sandMid.png", SPRITE_SCALING)
-                # wall.bottom = 20 * 
-                wall.center_x = (j)*random.randint(1,9)* GRID_PIXEL_SIZE 
-                if(random.randint(0,5)==0):
-                    # y_heights += random.randint(1,3)  
-                    rands = random.randint(2,4)
-                    for v in range(rands):
-                     wall.center_y = v*GRID_PIXEL_SIZE
+        # for i in range(10):            
+        #     rand = random.randint(200 , 200)
+        #     # y_rand = counters
+        #     for o in range(10):
+        #         countes = 1
+        #         for i in range(5):
+        #             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+        #             wall.center_x =  10000
+        #             wall.center_y = countes * GRID_PIXEL_SIZE
+        #             self.static_wall_list.append(wall)
+        #             countes += 1
+        #         y_heights = rand
+        #     for j in range(rand):
+        #         wall = arcade.Sprite(":resources:images/tiles/sandMid.png", SPRITE_SCALING, image_width=SPRITE_PIXEL_SIZE, image_height=SPRITE_PIXEL_SIZE)
+        #         # wall.bottom = 20 * 
+        #         wall.center_x = (i*j)* GRID_PIXEL_SIZE 
+        #         # wall.center_y = y_heights
+        #         self.static_wall_list.append(wall)
+        #     counter = counter + random.randint(2,8)
+        
+        # Create floor
+        for i in range(30):
+            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
+            wall.bottom = 0
+            wall.center_x = i * GRID_PIXEL_SIZE
+            self.static_wall_list.append(wall)
 
+        # Create platform side to side
+        wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 3 * GRID_PIXEL_SIZE
+        wall.center_x = 3 * GRID_PIXEL_SIZE
+        wall.boundary_left = 2 * GRID_PIXEL_SIZE
+        wall.boundary_right = 5 * GRID_PIXEL_SIZE
+        wall.change_x = 2 * SPRITE_SCALING
+        self.moving_wall_list.append(wall)
 
-                self.static_wall_list.append(wall)
+        # Create platform side to side
+        wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 3 * GRID_PIXEL_SIZE
+        wall.center_x = 7 * GRID_PIXEL_SIZE
+        wall.boundary_left = 5 * GRID_PIXEL_SIZE
+        wall.boundary_right = 9 * GRID_PIXEL_SIZE
+        wall.change_x = -2 * SPRITE_SCALING
+        self.moving_wall_list.append(wall)
 
+        # Create platform moving up and down
+        wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 5 * GRID_PIXEL_SIZE
+        wall.center_x = 5 * GRID_PIXEL_SIZE
+        wall.boundary_top = 8 * GRID_PIXEL_SIZE
+        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
+        wall.change_y = 2 * SPRITE_SCALING
+        self.moving_wall_list.append(wall)
+
+        # Create platform moving diagonally
+        wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 5 * GRID_PIXEL_SIZE
+        wall.center_x = 8 * GRID_PIXEL_SIZE
+        wall.boundary_left = 7 * GRID_PIXEL_SIZE
+        wall.boundary_right = 9 * GRID_PIXEL_SIZE
+        wall.boundary_top = 8 * GRID_PIXEL_SIZE
+        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
+        wall.change_x = 2 * SPRITE_SCALING
+        wall.change_y = 2 * SPRITE_SCALING
+        self.moving_wall_list.append(wall)
+
+        # Create our physics engine
+        self.physics_engine = \
+            arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                           [self.static_wall_list, self.moving_wall_list],
+                                           gravity_constant=GRAVITY)
+
+   
 
             # counters+=1
-            counter = counter*random.randint(2, 4)
         
         wall = arcade.Sprite(":resources:images/tiles/sandMid.png", SPRITE_SCALING)
         wall.center_y = 3 * GRID_PIXEL_SIZE
         wall.center_x = 3 * GRID_PIXEL_SIZE
-        wall.boundary_left = 2 * GRID_PIXEL_SIZE
+        wall.boundary_left = 20 * GRID_PIXEL_SIZE
         wall.boundary_right = 5 * GRID_PIXEL_SIZE
         wall.change_x = 2 * SPRITE_SCALING
 
@@ -175,11 +223,6 @@ class MyGame(arcade.Window):
             # for i in range(4):
                 # time.sleep(1)
         # print()
-        # wait for key press
-        
-        if ~self.speed_flag:
-            self.player_sprite.change_x = MOVEMENT_SPEED /8 
-        # if 
         self.x = self.player_sprite.center_x
         if self.Hand_Class.result != self.result_local:
             print(self.Hand_Class.result)
@@ -187,6 +230,9 @@ class MyGame(arcade.Window):
             if self.Hand_Class.result == 2:
                 if self.physics_engine.can_jump():
                     self.player_sprite.change_y = JUMP_SPEED
+        if ~self.speed_flag:
+            self.player_sprite.change_x = MOVEMENT_SPEED /8 
+        # if 
 
           
 
@@ -197,8 +243,6 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.speed_flag = True
             self.set_x_speed()
-        elif key == arcade.key.R:
-            self.Revive()
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.LEFT:

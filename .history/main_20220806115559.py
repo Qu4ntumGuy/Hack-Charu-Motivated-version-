@@ -24,7 +24,7 @@ VIEWPORT_MARGIN = SPRITE_PIXEL_SIZE * SPRITE_SCALING
 RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 MOVEMENT_SPEED = 50 * SPRITE_SCALING
 JUMP_SPEED = 20 * SPRITE_SCALING
-GRAVITY = 0.7* SPRITE_SCALING
+GRAVITY = 1* SPRITE_SCALING
 CAMERA_SPEED = 0.1
 
 # Main game class
@@ -64,7 +64,7 @@ class MyGame(arcade.Window):
         self.speed_flag = False
     def Revive(self ):
         self.player_sprite.center_x = self.x - 1*GRID_PIXEL_SIZE
-        self.player_sprite.center_y = 6 * GRID_PIXEL_SIZE
+        self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.stop_movment = True
     def setup(self):
         
@@ -101,14 +101,10 @@ class MyGame(arcade.Window):
             for j in range(rand):
                 wall = arcade.Sprite(":resources:images/tiles/sandMid.png", SPRITE_SCALING)
                 # wall.bottom = 20 * 
-                wall.center_x = (j)*random.randint(1,9)* GRID_PIXEL_SIZE 
+                wall.center_x = (j)* GRID_PIXEL_SIZE 
                 if(random.randint(0,5)==0):
                     # y_heights += random.randint(1,3)  
-                    rands = random.randint(2,4)
-                    for v in range(rands):
-                     wall.center_y = v*GRID_PIXEL_SIZE
-
-
+                    wall.center_y = GRID_PIXEL_SIZE
                 self.static_wall_list.append(wall)
 
 
@@ -175,8 +171,6 @@ class MyGame(arcade.Window):
             # for i in range(4):
                 # time.sleep(1)
         # print()
-        # wait for key press
-        
         if ~self.speed_flag:
             self.player_sprite.change_x = MOVEMENT_SPEED /8 
         # if 
@@ -197,8 +191,6 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.speed_flag = True
             self.set_x_speed()
-        elif key == arcade.key.R:
-            self.Revive()
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.LEFT:

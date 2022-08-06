@@ -64,7 +64,7 @@ class MyGame(arcade.Window):
         self.speed_flag = False
     def Revive(self ):
         self.player_sprite.center_x = self.x - 1*GRID_PIXEL_SIZE
-        self.player_sprite.center_y = 6 * GRID_PIXEL_SIZE
+        self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.stop_movment = True
     def setup(self):
         
@@ -197,8 +197,6 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.speed_flag = True
             self.set_x_speed()
-        elif key == arcade.key.R:
-            self.Revive()
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.LEFT:

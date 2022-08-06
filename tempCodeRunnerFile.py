@@ -1,1 +1,1 @@
-range
+SPRITE_SIZE
